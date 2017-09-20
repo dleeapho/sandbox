@@ -98,7 +98,7 @@ Concept
 
 The source-build repo is the basis of constructing the whole product. It must
 first be be made sustainable. Currently it is a vertical build that provides
-source buildable tarballs, we propose to extend it to build all supported
+source buildable tarballs, we propose to extend it to also build all supported
 platforms and to produce the Microsoft distributable .NET Core componets
 efficiently. For each repo to be aggregated within source-build with automatic
 dependency flow and to be optimizable within the structure of source-build, each
@@ -110,7 +110,7 @@ standardized behaviours and to adopt toolsets that enable repo coordination by
 source-build . Finally, we need to implement orchestration to: 1. Provision and
 manage machines, scale 2. Coordinate the vertical builds, harvest the output to
 produce the distributable product 3. Finalize the build with signing, testing,
-publishing) 4. This is likely some implementation of Jenkins orchestration.
+publishing) 4. This is likely some implementation of existing or future build orchestration infrastructure.
 
 ![Diagram of Product Build](media/48887747198ca0c1cf727299d020e64c.png)
 
@@ -147,16 +147,16 @@ Build](https://microsoft.sharepoint.com/teams/netfx/engineering/Shared%20Documen
         to fulfill source build requirements from Linux distros. For now, repos
         should not introduce new indeterminism in their builds.
 
-### Requirements for Build from Source
+### Requirements for source-build repo
 
-1.  Source build’s knowledge of product dependencies must be derivable from each
+1.  Source-build’s knowledge of product dependencies must be derivable from each
     constituent repo’s dependency declaration (what it consumes and what it
     produces).
 
-2.  Source build must produce a source buildable environment at will and with no
+2.  Source-build must produce a source buildable environment at will and with no
     special intervention for supported platforms.
 
-3.  Source build will determine the structure and ordering of repo builds that
+3.  Source-build will determine the structure and ordering of repo builds that
     construct the product.
 
 ### Requirements for Engineering Services
@@ -182,8 +182,8 @@ risk and churn that the product cannot afford now.
 Tasks
 -----
 
-To reach the objective the main effort will be to extend source-build to enable
-automatic dependency flow between repo builds and enable optimized product
+To reach the objective the main effort will be to extend source-build to aggregate constituent enable
+repo builds uniformly then enable optimized product
 builds. These are large tasks with significant technical hurdles to be
 surmounted— we need to continue to iterate on designs for these tasks. Overall,
 the approach is to be scenario-focused, eg enable automatic dependency flow for
@@ -230,7 +230,7 @@ flow. We have enough prior effort on these tasks to start implementation now.
             servicing branches as appropriate.
 
     2.  Epic: Source-build can consume and aggregate constituent repo builds
-        uniformly.
+        uniformly. [Epic #145](https://github.com/dotnet/source-build/issues/145)
 
         -   Objective: Source-build can automatically produce community and Red
             Hat source-builds with no special intervention (patches are
@@ -417,12 +417,14 @@ instance there is no need to download the CLI when an appropriate version is
 already installed. However, repositories cannot require it be installed to
 build.
 
-**No circular dependencies across repositories**
+No circular dependencies across repositories
+--------------------------------------------
 
 Circular dependencies block deterministic builds and can prevent incremental
 builds. Circularity reduces overall throughput.
 
-**The .NET Core product can be built from source**
+The .NET Core product can be built from source
+----------------------------------------------
 
 In addition to having source-buildable .NET Core components to support Linux
 eco-system, the Microsoft distributable components should be buildable from the
@@ -476,9 +478,10 @@ Reproducible Build
 
 The ability for isolated repo builds, and in turn the orchestrated and source
 builds, to produce byte for byte equivalent output between builds. From
-[reproducible-builds.org](https://reproducible-builds.org/): \> Reproducible
-builds are a set of software development practices that create a verifiable path
-from human readable source code to the binary code used by computers.
+[reproducible-builds.org](https://reproducible-builds.org/):
+
+> Reproducible builds are a set of software development practices that create a verifiable path
+>from human readable source code to the binary code used by computers.
 
 ### Alternative terms:
 
